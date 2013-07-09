@@ -1,5 +1,5 @@
 /** (c) 2004 Uri Wilensky. See README.txt for terms of use. **/
-package org.nlogo.extensions.gogo
+package org.nlogo.extensions.gogolite
 
 import java.util.{ List => JList }
 
@@ -9,7 +9,7 @@ import installer.WindowsInstaller
 
 import org.nlogo.api.{ DefaultClassManager, ExtensionException, ExtensionManager, PrimitiveManager }
 
-class GoGoExtension extends DefaultClassManager {
+class GoGoLiteExtension extends DefaultClassManager {
 
   private val manager = new ControllerManager
 
@@ -29,9 +29,6 @@ class GoGoExtension extends DefaultClassManager {
     primManager.addPrimitive("set-output-port-power", new OutputPortPower(manager))
     primManager.addPrimitive("output-port-reverse",   new OutputPortReverse(manager))
     primManager.addPrimitive("talk-to-output-ports",  new TalkToOutputPorts(manager))
-    primManager.addPrimitive("set-burst-mode",        new SetBurstMode(manager))
-    primManager.addPrimitive("stop-burst-mode",       new StopBurstMode(manager))
-    primManager.addPrimitive("burst-value",           new SensorBurstValue(manager))
     primManager.addPrimitive("sensor",                new Sensor(manager))
     primManager.addPrimitive("beep",                  new Beep(manager))
     primManager.addPrimitive("led-on",                new LedOn(manager))
@@ -40,7 +37,6 @@ class GoGoExtension extends DefaultClassManager {
   }
 
   override def runOnce(em: ExtensionManager) {
-    em.addToLibraryPath(this, "lib")
     WindowsInstaller(true)
   }
 
@@ -78,7 +74,7 @@ class GoGoExtension extends DefaultClassManager {
 
   override def additionalJars: JList[String] = {
     import scala.collection.JavaConverters.seqAsJavaListConverter
-    List("RXTXcomm.jar").asJava
+    List("jssc-2.6.0.jar").asJava
   }
 
 }

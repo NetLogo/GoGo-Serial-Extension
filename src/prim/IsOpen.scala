@@ -1,9 +1,9 @@
-package org.nlogo.extensions.gogo.prim
+package org.nlogo.extensions.gogolite.prim
 
 import
   org.nlogo.{ api, extensions },
     api.{ Argument, Context, DefaultReporter, Syntax },
-    extensions.gogo.controller.ControllerManager
+    extensions.gogolite.controller.ControllerManager
 
 class IsOpen(manager: ControllerManager) extends DefaultReporter {
   override def getSyntax = Syntax.reporterSyntax(Syntax.BooleanType)

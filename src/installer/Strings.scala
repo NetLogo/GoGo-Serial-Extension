@@ -1,4 +1,4 @@
-package org.nlogo.extensions.gogo.installer
+package org.nlogo.extensions.gogolite.installer
 
 private[installer] object Strings {
 

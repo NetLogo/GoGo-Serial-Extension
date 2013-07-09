@@ -1,9 +1,9 @@
-package org.nlogo.extensions.gogo.prim
+package org.nlogo.extensions.gogolite.prim
 
 import
   org.nlogo.{ api, extensions },
     api.{ Argument, Context, Syntax },
-    extensions.gogo.controller.{ Constants, Controller, ControllerManager },
+    extensions.gogolite.controller.{ Constants, Controller, ControllerManager },
       Constants._
 
 class TalkToOutputPorts(manager: ControllerManager) extends ManagedCommand(manager) {

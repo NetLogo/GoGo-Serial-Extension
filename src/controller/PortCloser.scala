@@ -1,6 +1,8 @@
-package org.nlogo.extensions.gogo.controller
+package org.nlogo.extensions.gogolite.controller
 
-import java.io.IOException
+import scala.util.control.Exception.ignoring
+
+import jssc.SerialPortException
 
 private[controller] trait PortCloser {
 
@@ -9,28 +11,11 @@ private[controller] trait PortCloser {
   def closePort() {
     portOpt foreach {
       port =>
-
-        port.removeEventListener()
-
-        closeCloseableOpt(inputStreamOpt)
-        closeCloseableOpt(outputStreamOpt)
-        port.close()
-
-        inputStreamOpt  = None
-        outputStreamOpt = None
-        portOpt         = None
-
-    }
-  }
-
-  private def closeCloseableOpt[T <: { def close() }](opt: Option[T]) {
-    opt foreach {
-      closeable => closeable synchronized {
-        try closeable.close()
-        catch {
-          case e: IOException => e.printStackTrace()
+        ignoring(classOf[SerialPortException]) {
+          port.removeEventListener()
         }
-      }
+        port.closePort()
+        portOpt = None
     }
   }
 

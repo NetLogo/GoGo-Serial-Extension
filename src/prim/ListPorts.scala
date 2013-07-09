@@ -1,9 +1,9 @@
-package org.nlogo.extensions.gogo.prim
+package org.nlogo.extensions.gogolite.prim
 
 import
   org.nlogo.{ api, extensions },
     api.{ Argument, Context, DefaultReporter, LogoList, Syntax },
-    extensions.gogo.util.fetchPorts
+    extensions.gogolite.util.fetchPorts
 
 class ListPorts extends DefaultReporter {
   override def getSyntax = Syntax.reporterSyntax(Syntax.ListType)

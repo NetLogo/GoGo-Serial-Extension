@@ -1,4 +1,4 @@
-package org.nlogo.extensions.gogo.controller
+package org.nlogo.extensions.gogolite.controller
 
 import org.nlogo.api.ExtensionException
 

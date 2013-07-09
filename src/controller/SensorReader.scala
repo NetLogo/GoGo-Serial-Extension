@@ -1,4 +1,6 @@
-package org.nlogo.extensions.gogo.controller
+package org.nlogo.extensions.gogolite.controller
+
+import java.io.IOException
 
 import java.io.IOException
 
@@ -18,25 +20,21 @@ trait SensorReader {
       throw new ExtensionException("Sensor number out of range: " + sensor)
     else {
 
-      val arr = {
+      val (arr, sensorNum) = {
         if (sensor > 8) {
           val highByte = ((sensor - 9) >> 8).toByte
           val lowByte  = ((sensor - 9) & 0xFF).toByte
-          Array(CmdReadExtendedSensor, highByte, lowByte)
+          val num: Int = Integer.valueOf("%02X%02X".format(highByte, lowByte), 16)
+          (Array(CmdReadExtendedSensor, highByte, lowByte), num)
         }
-        else
-          Array((CmdReadSensor | ((sensor - 1) << 2) | mode).toByte)
+        else {
+          (Array((CmdReadSensor | ((sensor - 1) << 2) | mode).toByte), sensor - 1)
+        }
       }
 
-      try {
-        writeAndWaitForReplyHeader(arr: _*)
-        (readInt << 8) + readInt
-      }
-      catch {
-        case e: IOException =>
-          e.printStackTrace()
-          0
-      }
+      write(arr: _*)
+      CacheManager.readSensor(sensorNum)
+
     }
 
   }

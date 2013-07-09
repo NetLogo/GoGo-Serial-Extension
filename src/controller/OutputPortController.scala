@@ -1,4 +1,4 @@
-package org.nlogo.extensions.gogo.controller
+package org.nlogo.extensions.gogolite.controller
 
 import Constants._
 
@@ -31,7 +31,7 @@ trait OutputPortController {
   }
 
   private def outputPortControl(cmd: Byte) {
-    writeAndWait(cmd)
+    write(cmd)
   }
 
 }

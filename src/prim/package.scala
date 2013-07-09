@@ -1,4 +1,4 @@
-package org.nlogo.extensions.gogo
+package org.nlogo.extensions.gogolite
 
 package object prim {
 

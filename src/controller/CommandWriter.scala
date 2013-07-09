@@ -1,44 +1,23 @@
-package org.nlogo.extensions.gogo.controller
+package org.nlogo.extensions.gogolite.controller
 
-import java.io.IOException
+import jssc.SerialPortException
+
+import org.nlogo.api.ExtensionException
 
 import Constants.{ OutHeader1, OutHeader2 }
 
 trait CommandWriter {
 
-  self: Waiter with HasPortsAndStreams =>
+  self: HasPortsAndStreams =>
 
-  protected def writeAndWait(bytes: Byte*): Boolean = {
-    writeCommand(bytes.toArray)
-    waitForAck()
-  }
-
-  protected def writeAndWaitForReplyHeader(bytes: Byte*): Boolean = {
-    writeCommand(bytes.toArray)
-    waitForReplyHeader()
-  }
-
-  private def writeCommand(command: Array[Byte]) {
-    outputStreamOpt foreach {
-      os => os synchronized {
-        try {
-          writeByte(OutHeader1)
-          writeByte(OutHeader2)
-          os.write(command)
-        }
+  protected def write(commands: Byte*) {
+    portOpt map {
+      port =>
+        try port.writeBytes(Array(OutHeader1, OutHeader2) ++ commands)
         catch {
-          case e: IOException => e.printStackTrace()
+          case e: SerialPortException => throw new ExtensionException("Unknown error in communicating to GoGo board", e)
         }
-      }
-    }
-  }
-
-  private def writeByte(b: Byte) {
-    outputStreamOpt foreach {
-      os => synchronized {
-        os.write(b)
-      }
-    }
+    } getOrElse (throw new ExtensionException("Cannot write to unopened port"))
   }
 
 }

@@ -1,9 +1,9 @@
-package org.nlogo.extensions.gogo.prim
+package org.nlogo.extensions.gogolite.prim
 
 import
   org.nlogo.{ api, extensions },
     api.{ Argument, Context, DefaultCommand, Syntax },
-    extensions.gogo.controller.ControllerManager
+    extensions.gogolite.controller.ControllerManager
 
 class Open(manager: ControllerManager) extends DefaultCommand {
   override def getSyntax = Syntax.commandSyntax(Array(Syntax.StringType))
@@ -15,19 +15,14 @@ class Open(manager: ControllerManager) extends DefaultCommand {
 
     try {
       manager.init(args(0).getString)
-      controllerOpt foreach {
-        controller =>
-          controller.openPort()
-          controller.setReadTimeout(50)
-      }
+      controllerOpt foreach (_.openPort())
     }
     catch {
-      case e: NoClassDefFoundError => throw new EE("Could not initialize GoGo Extension.  Please ensure that you have installed RXTX correctly.  Full error message: %s : %s".format(args(0).getString, e.getLocalizedMessage))
+      case e: NoClassDefFoundError => throw new EE("Could not initialize GoGo Extension.  Full error message: %s : %s".format(args(0).getString, e.getLocalizedMessage))
       case e: Exception            => throw new EE("Could not open port %s : %s".format(args(0).getString, e.getLocalizedMessage))
     }
 
-    if (!(controllerOpt map (_.ping()) getOrElse false))
-      throw new EE("GoGo board not responding.")
+    controllerOpt map (_.ping())
 
   }
 }
