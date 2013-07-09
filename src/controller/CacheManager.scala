@@ -38,11 +38,10 @@ object CacheManager {
     private var stash: String         = ""
     private val cache: MMap[Int, Int] = MMap()
 
-    private val Dropper = """.*?(%02X$|%02X%02X.*)""".format(OutHeader1, OutHeader1, OutHeader2).r
-    private val Reading = """%02X%02X(.*?)%02X%02X(.*?)(%02X%02X.*)""".format(OutHeader1, OutHeader2, InHeader1, InHeader2, OutHeader1, OutHeader2).r
-
-    private val NormalSensor   = """(.{2})""".r
-    private val ExtendedSensor = """%02X(.{4})""".format(CmdReadExtendedSensor).r
+    private val Dropper        = """.*?(%02X$|%02X%02X.*|$)""".format(OutHeader1, OutHeader1, OutHeader2).r
+    private val Command        = """%02X%02X(.*?)%02X%02X(.*)""".format(OutHeader1, OutHeader2, InHeader1, InHeader2).r
+    private val NormalSensor   = """%02X%02X(.{2})%02X%02X(.{4})(.*)""".format(OutHeader1, OutHeader2, InHeader1, InHeader2).r
+    private val ExtendedSensor = """%02X%02X%02X(.{4})%02X%02X(.{4})(.*)""".format(OutHeader1, OutHeader2, CmdReadExtendedSensor, InHeader1, InHeader2).r
 
     start()
 
@@ -67,18 +66,19 @@ object CacheManager {
       @annotation.tailrec
       def accumulateUpdates(str: String, updates: Seq[(Int, Int)] = Seq()): Seq[(Int, Int)] = {
          str match {
-           case Reading(cmd, data, remaining) =>
-             val updateOpt = cmd match {
-               case NormalSensor(inner) if (32 to 60 contains convert(inner)) =>
-                 Option((convert(inner) - CmdReadSensor) / 4)
-               case ExtendedSensor(highLow) =>
-                 Option(convert(highLow))
-               case x =>
-                 None
-             }
-             val newUpdates = updateOpt map (_ -> convert(data)) map (updates :+ _) getOrElse updates
+           case NormalSensor(sensorNum, data, remaining) if (32 to 60 contains convert(sensorNum)) =>
+             val num        = (convert(sensorNum) - CmdReadSensor) / 4
+             val newUpdates = updates :+ num -> convert(data)
              accumulateUpdates(remaining, newUpdates)
-           case _ =>
+           case ExtendedSensor(highLow, data, remaining) =>
+             val num        = convert(highLow)
+             val newUpdates = updates :+ num -> convert(data)
+             accumulateUpdates(remaining, newUpdates)
+           case Command(cmd, remaining) => // Simply drop commands that aren't sensor readings
+             val Dropper(retained) = remaining
+             accumulateUpdates(retained, updates)
+           case remaining =>
+             stash = remaining
              updates
         }
       }
