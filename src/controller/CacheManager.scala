@@ -15,7 +15,7 @@ object CacheManager {
     def act() {
       loop {
         reactWithin(FlushIntervalMs) {
-          case TIMEOUT  => actor ! Refresh
+          case TIMEOUT => actor ! Refresh
         }
       }
     }
