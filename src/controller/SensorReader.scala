@@ -29,6 +29,7 @@ trait SensorReader {
       }
 
       write(arr: _*)
+      Thread.sleep(10)
       CacheManager.readSensor(sensorNum)
 
     }
