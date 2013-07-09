@@ -1,9 +1,5 @@
 package org.nlogo.extensions.gogolite.controller
 
-import java.io.IOException
-
-import java.io.IOException
-
 import Constants.{ CmdReadExtendedSensor, CmdReadSensor, SensorReadNormal }
 
 import org.nlogo.api.ExtensionException
