@@ -11,10 +11,9 @@ object CacheManager {
   // Tell `actor` to refresh every 50ms
   new Actor {
     start()
-    val FlushIntervalMs = 50
     def act() {
       loop {
-        reactWithin(FlushIntervalMs) {
+        reactWithin(50) {
           case TIMEOUT => actor ! Refresh
         }
       }
@@ -30,72 +29,73 @@ object CacheManager {
     sensorValue
   }
 
-  class CacheManagerActor extends Actor {
+}
 
-    import collection.mutable.{ Map => MMap }
-    import Constants._
+private class CacheManagerActor extends Actor {
 
-    private var stash: String         = ""
-    private val cache: MMap[Int, Int] = MMap()
+  import collection.mutable.{ Map => MMap }
+  import Constants._
 
-    private val Dropper        = """.*?(%02X$|%02X%02X.*|$)""".format(OutHeader1, OutHeader1, OutHeader2).r
-    private val Command        = """%02X%02X(.*?)%02X%02X(.*)""".format(OutHeader1, OutHeader2, InHeader1, InHeader2).r
-    private val NormalSensor   = """%02X%02X(.{2})%02X%02X(.{4})(.*)""".format(OutHeader1, OutHeader2, InHeader1, InHeader2).r
-    private val ExtendedSensor = """%02X%02X%02X(.{4})%02X%02X(.{4})(.*)""".format(OutHeader1, OutHeader2, CmdReadExtendedSensor, InHeader1, InHeader2).r
+  private var stash: String         = ""
+  private val cache: MMap[Int, Int] = MMap()
 
-    start()
+  private val FullOutHeader = """%02X%02X""".format(OutHeader1, OutHeader2)
+  private val FullInHeader  = """%02X%02X""".format(InHeader1,  InHeader2)
 
-    override def act() {
-      loop {
-        react {
-          case Write(str) =>
-            stash += str
-          case Read(num) =>
-            freshenCache()
-            reply(Sensor(cache.getOrElse(num, -1)))
-          case Refresh =>
-            freshenCache()
-        }
+  private val Dropper        = """.*?(%02X$|%s.*|$)""".       format(OutHeader1, FullOutHeader).r // Sometimes, we have to drop junk until next command
+  private val Command        = """%s(.*?)%s(.*)""".           format(FullOutHeader, FullInHeader).r
+  private val NormalSensor   = """%s(.{2})%s(.{4})(.*)""".    format(FullOutHeader, FullInHeader).r
+  private val ExtendedSensor = """%s%02X(.{4})%s(.{4})(.*)""".format(FullOutHeader, CmdReadExtendedSensor, FullInHeader).r
+
+  start()
+
+  override def act() {
+    loop {
+      react {
+        case Write(str) =>
+          stash += str
+        case Read(num) =>
+          freshenCache()
+          reply(Sensor(cache.getOrElse(num, -1)))
+        case Refresh =>
+          freshenCache()
+      }
+    }
+  }
+
+  private def freshenCache() {
+
+    def convert(str: String): Int = Integer.valueOf(str, 16) // Reads hex string into `Int`
+
+    @annotation.tailrec
+    def accumulateUpdates(str: String, updates: Seq[(Int, Int)] = Seq()): Seq[(Int, Int)] = {
+      str match {
+        case NormalSensor(sensorNum, data, remaining) if (32 to 60 contains convert(sensorNum)) =>
+          val num        = (convert(sensorNum) - CmdReadSensor) / 4
+          val newUpdates = updates :+ num -> convert(data)
+          accumulateUpdates(remaining, newUpdates)
+        case ExtendedSensor(highLow, data, remaining) =>
+          val num        = convert(highLow)
+          val newUpdates = updates :+ num -> convert(data)
+          accumulateUpdates(remaining, newUpdates)
+        case Command(cmd, Dropper(remaining)) => // Simply drop commands that aren't sensor readings
+          accumulateUpdates(remaining, updates)
+        case remaining =>
+          stash = remaining
+          updates
       }
     }
 
-    private def freshenCache() {
-
-      def convert(str: String): Int = Integer.valueOf(str, 16)
-
-      @annotation.tailrec
-      def accumulateUpdates(str: String, updates: Seq[(Int, Int)] = Seq()): Seq[(Int, Int)] = {
-         str match {
-           case NormalSensor(sensorNum, data, remaining) if (32 to 60 contains convert(sensorNum)) =>
-             val num        = (convert(sensorNum) - CmdReadSensor) / 4
-             val newUpdates = updates :+ num -> convert(data)
-             accumulateUpdates(remaining, newUpdates)
-           case ExtendedSensor(highLow, data, remaining) =>
-             val num        = convert(highLow)
-             val newUpdates = updates :+ num -> convert(data)
-             accumulateUpdates(remaining, newUpdates)
-           case Command(cmd, remaining) => // Simply drop commands that aren't sensor readings
-             val Dropper(retained) = remaining
-             accumulateUpdates(retained, updates)
-           case remaining =>
-             stash = remaining
-             updates
-        }
-      }
-
-      val Dropper(retained) = stash.filterNot(_ == ' ')
-      val updates = accumulateUpdates(retained)
-      updates foreach { case (num, value) => cache += num -> value }
-
-    }
+    val Dropper(retained) = stash.filterNot(_ == ' ')
+    cache ++= accumulateUpdates(retained)
 
   }
 
 }
 
-object CacheManagerMessages {
+private object CacheManagerMessages {
   case object Refresh
-  case class  Read  (num: Int)
+  case class  Read  (num:   Int)
   case class  Sensor(value: Int)
-  case class  Write (str: String)
+  case class  Write (str:   String)
 }
