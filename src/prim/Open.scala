@@ -10,7 +10,7 @@ class Open(manager: ControllerManager) extends DefaultCommand {
   override def perform(args: Array[Argument], context: Context) {
     manager.close()
     manager.init(args(0).getString)
-    manager.withController {
+    manager.getControllerOpt foreach {
       controller =>
         controller.openPort()
         controller.ping()
