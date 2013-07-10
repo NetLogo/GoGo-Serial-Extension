@@ -1,8 +1,11 @@
 package org.nlogo.extensions.gogolite.controller
 
-import jssc.SerialPortException
+import jssc.SerialPort
 
-import org.nlogo.api.ExtensionException
+import
+  org.nlogo.{ api, extensions },
+    api.ExtensionException,
+    extensions.gogolite.util.rethrowingJSSCSafely
 
 import Constants.{ OutHeader1, OutHeader2 }
 
@@ -11,13 +14,11 @@ trait CommandWriter {
   self: HasPortsAndStreams =>
 
   protected def write(commands: Byte*) {
-    portOpt map {
-      port =>
-        try port.writeBytes(Array(OutHeader1, OutHeader2) ++ commands)
-        catch {
-          case e: SerialPortException => throw new ExtensionException("Unknown error in communicating to GoGo board", e)
-        }
-    } getOrElse (throw new ExtensionException("Cannot write to unopened port"))
+    portOpt map rethrowingJSSCSafely("Unknown error in communicating to GoGo board") {
+      (_: SerialPort).writeBytes(Array(OutHeader1, OutHeader2) ++ commands)
+    } getOrElse {
+      throw new ExtensionException("Cannot write to unopened port")
+    }
   }
 
 }

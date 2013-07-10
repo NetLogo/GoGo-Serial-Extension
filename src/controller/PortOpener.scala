@@ -1,10 +1,10 @@
 package org.nlogo.extensions.gogolite.controller
 
 import
-  jssc.{ SerialPort, SerialPortEventListener, SerialPortException },
+  jssc.{ SerialPort, SerialPortEventListener },
     SerialPort._
 
-import org.nlogo.api.ExtensionException
+import org.nlogo.extensions.gogolite.util.rethrowingJSSCSafely
 
 private[controller] trait PortOpener {
 
@@ -15,7 +15,7 @@ private[controller] trait PortOpener {
   }
 
   private def initializePort(): SerialPort = {
-    try {
+    rethrowingJSSCSafely("Unable to open port: " + portName) {
       val port = new SerialPort(portName)
       port.openPort()
       port.setParams(BAUDRATE_9600, DATABITS_8, STOPBITS_1, PARITY_NONE)
@@ -23,9 +23,6 @@ private[controller] trait PortOpener {
       port.setEventsMask(MASK_RXCHAR)
       port.addEventListener(this)
       port
-    }
-    catch {
-      case e: SerialPortException => throw new ExtensionException("Unable to open port " + portName, e)
     }
   }
 
