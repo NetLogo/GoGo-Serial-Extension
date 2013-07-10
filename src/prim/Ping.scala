@@ -12,7 +12,6 @@ class Ping(manager: ControllerManager) extends ManagedReporter(manager) {
 
     context match {
       case c: ExtensionContext =>
-
         val result = {
           try {
             controller.ping()
@@ -24,12 +23,9 @@ class Ping(manager: ControllerManager) extends ManagedReporter(manager) {
               false
           }
         }
-
         Boolean.box(result)
-
       case _ =>
         throw new ExtensionException("Somehow, this extension isn't running in an `ExtensionContext`")
-
     }
 
   }
