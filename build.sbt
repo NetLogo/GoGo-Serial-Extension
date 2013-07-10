@@ -37,14 +37,14 @@ packageBin in Compile <<= (packageBin in Compile, dependencyClasspath in Runtime
     for(path <- libraryJarPaths)
       IO.copyFile(path, base / path.getName)
     if(Process("git diff --quiet --exit-code HEAD").! == 0) {
-      Process("git archive -o gogo-lite.zip --prefix=gogo/ HEAD").!!
-      IO.createDirectory(base / "gogo")
+      Process("git archive -o gogo-lite.zip --prefix=gogo-lite/ HEAD").!!
+      IO.createDirectory(base / "gogo-lite")
       val zipExtras =
         (libraryJarPaths.map(_.getName) :+ "gogo-lite.jar")
       for(extra <- zipExtras)
-        IO.copyFile(base / extra, base / "gogo" / extra)
-      Process("zip -r gogo-lite.zip " + zipExtras.map("gogo/" + _).mkString(" ")).!!
-      IO.delete(base / "gogo")
+        IO.copyFile(base / extra, base / "gogo-lite" / extra)
+      Process("zip -r gogo-lite.zip " + zipExtras.map("gogo-lite/" + _).mkString(" ")).!!
+      IO.delete(base / "gogo-lite")
     }
     else {
       s.log.warn("working tree not clean; no zip archive made")
