@@ -16,17 +16,15 @@ trait SensorReader {
       throw new ExtensionException("Sensor number out of range: " + sensor)
     else {
 
-      val (arr, sensorNum) = {
+      val (arr, sensorNum) =
         if (sensor > 8) {
           val highByte = ((sensor - 9) >> 8).toByte
           val lowByte  = ((sensor - 9) & 0xFF).toByte
           val num: Int = Integer.valueOf("%02X%02X".format(highByte, lowByte), 16)
           (Array(CmdReadExtendedSensor, highByte, lowByte), num)
         }
-        else {
+        else
           (Array((CmdReadSensor | ((sensor - 1) << 2) | mode).toByte), sensor - 1)
-        }
-      }
 
       write(arr: _*)
       Thread.sleep(10)
