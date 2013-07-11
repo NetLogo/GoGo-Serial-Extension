@@ -35,7 +35,7 @@ object CacheManager {
     def tryAgain(startTime: Long): Boolean = {
 
       val PingResponse(pingTime) = actor !? PingRequest
-      val timedOut               = (System.currentTimeMillis() - startTime) >= 500
+      val timedOut               = (System.currentTimeMillis() - startTime) >= 50
       val isFresh                = (pingTime                   - startTime) >= 0
 
       if (timedOut)
