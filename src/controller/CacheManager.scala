@@ -29,6 +29,29 @@ object CacheManager {
     sensorValue
   }
 
+  def checkPing(): Boolean = {
+
+    @annotation.tailrec
+    def tryAgain(startTime: Long): Boolean = {
+
+      val PingResponse(pingTime) = actor !? PingRequest
+      val timedOut               = (System.currentTimeMillis() - startTime) >= 500
+      val isFresh                = (pingTime                   - startTime) >= 0
+
+      if (timedOut)
+        false
+      else
+        if (isFresh)
+          true
+        else
+          tryAgain(startTime)
+
+    }
+
+    tryAgain(System.currentTimeMillis())
+
+  }
+
 }
 
 private class CacheManagerActor extends Actor {
@@ -36,14 +59,16 @@ private class CacheManagerActor extends Actor {
   import collection.mutable.{ Map => MMap }
   import Constants._
 
-  private var stash: String         = ""
-  private val cache: MMap[Int, Int] = MMap()
+  private var lastPingTime: Long           = 0
+  private var stash:        String         = ""
+  private val cache:        MMap[Int, Int] = MMap()
 
   private val FullOutHeader = """%02X%02X""".format(OutHeader1, OutHeader2)
   private val FullInHeader  = """%02X%02X""".format(InHeader1,  InHeader2)
 
   private val Dropper        = """.*?(%02X$|%s.*|$)""".       format(OutHeader1, FullOutHeader).r // Sometimes, we have to drop junk until next command
   private val Command        = """%s(.*?)%s(.*)""".           format(FullOutHeader, FullInHeader).r
+  private val Ping           = """%s%02X%s(.*)""".            format(FullOutHeader, CmdPing, FullInHeader).r
   private val NormalSensor   = """%s(.{2})%s(.{4})(.*)""".    format(FullOutHeader, FullInHeader).r
   private val ExtendedSensor = """%s%02X(.{4})%s(.{4})(.*)""".format(FullOutHeader, CmdReadExtendedSensor, FullInHeader).r
 
@@ -59,6 +84,8 @@ private class CacheManagerActor extends Actor {
           reply(Sensor(cache.getOrElse(num, -1)))
         case Refresh =>
           freshenCache()
+        case PingRequest =>
+          reply(PingResponse(lastPingTime))
       }
     }
   }
@@ -78,6 +105,9 @@ private class CacheManagerActor extends Actor {
           val num        = convert(highLow)
           val newUpdates = updates :+ num -> convert(data)
           accumulateUpdates(remaining, newUpdates)
+        case Ping(Dropper(remaining)) =>
+          lastPingTime = System.currentTimeMillis()
+          accumulateUpdates(remaining, updates)
         case Command(cmd, Dropper(remaining)) => // Simply drop commands that aren't sensor readings
           accumulateUpdates(remaining, updates)
         case remaining =>
@@ -94,6 +124,8 @@ private class CacheManagerActor extends Actor {
 }
 
 private object CacheManagerMessages {
+  case object PingRequest
+  case class  PingResponse(time: Long)
   case object Refresh
   case class  Read  (num:   Int)
   case class  Sensor(value: Int)

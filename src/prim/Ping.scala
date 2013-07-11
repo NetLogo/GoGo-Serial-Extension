@@ -13,10 +13,7 @@ class Ping(manager: ControllerManager) extends ManagedReporter(manager) {
     context match {
       case c: ExtensionContext =>
         val result = {
-          try {
-            controller.ping()
-            true
-          }
+          try controller.ping()
           catch {
             case ex: ExtensionException =>
               c.workspace.outputObject("Failed to ping GoGo board: " + ex.getMessage, c.getAgent, true, true, Workspace.OutputDestination.NORMAL)

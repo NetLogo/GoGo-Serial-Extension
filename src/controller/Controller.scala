@@ -24,8 +24,9 @@ class Controller(override protected val portName: String)
     write(CmdBeep, 0x00)
   }
 
-  def ping() {
+  def ping(): Boolean = {
     write(CmdPing)
+    CacheManager.checkPing()
   }
 
   def led(on: Boolean) {
