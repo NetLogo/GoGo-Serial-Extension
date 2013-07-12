@@ -1,6 +1,7 @@
 *~
 *.orig
 *.jar
+*.jar.pack.gz
 target/
 /gogo-lite.zip
 .DS_Store
