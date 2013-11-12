@@ -43,7 +43,6 @@ class Controller(override protected val portName: String)
   }
 
   def setServoPosition(value: Int) {
-    if ((value < 20) || (value > 40)) throw new ExtensionException("Requested servo position (%s) is out of safe range (20-40)".format(value))
     write(CmdPwmServo, value.toByte)
   }
 
