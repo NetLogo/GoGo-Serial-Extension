@@ -1,9 +1,9 @@
-package org.nlogo.extensions.gogolite.prim
+package org.nlogo.extensions.gogoserial.prim
 
 import
   org.nlogo.{ api, extensions },
     api.{ Argument, Context, DefaultCommand, DefaultReporter },
-    extensions.gogolite.controller.{ Controller, ControllerManager }
+    extensions.gogoserial.controller.{ Controller, ControllerManager }
 
 abstract class ManagedReporter(manager: ControllerManager) extends DefaultReporter {
 

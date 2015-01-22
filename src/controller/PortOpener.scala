@@ -1,10 +1,10 @@
-package org.nlogo.extensions.gogolite.controller
+package org.nlogo.extensions.gogoserial.controller
 
 import
   jssc.{ SerialPort, SerialPortEventListener },
     SerialPort._
 
-import org.nlogo.extensions.gogolite.util.rethrowingJSSCSafely
+import org.nlogo.extensions.gogoserial.util.rethrowingJSSCSafely
 
 private[controller] trait PortOpener {
 

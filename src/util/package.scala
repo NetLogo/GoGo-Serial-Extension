@@ -1,4 +1,4 @@
-package org.nlogo.extensions.gogolite
+package org.nlogo.extensions.gogoserial
 
 import collection.mutable.{ LinkedHashMap => LinkedMap }
 

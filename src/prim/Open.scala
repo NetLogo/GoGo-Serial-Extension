@@ -1,9 +1,9 @@
-package org.nlogo.extensions.gogolite.prim
+package org.nlogo.extensions.gogoserial.prim
 
 import
   org.nlogo.{ api, extensions },
     api.{ Argument, Context, DefaultCommand, Syntax },
-    extensions.gogolite.controller.ControllerManager
+    extensions.gogoserial.controller.ControllerManager
 
 class Open(manager: ControllerManager) extends DefaultCommand {
   override def getSyntax = Syntax.commandSyntax(Array(Syntax.StringType))

@@ -1,4 +1,4 @@
-package org.nlogo.extensions.gogolite
+package org.nlogo.extensions.gogoserial
 
 package object prim {
   private[prim] def buildMask(xs: Seq[_], maskMap: Map[Char, Int]): Int =

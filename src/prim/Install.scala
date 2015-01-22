@@ -1,9 +1,9 @@
-package org.nlogo.extensions.gogolite.prim
+package org.nlogo.extensions.gogoserial.prim
 
 import
   org.nlogo.{ api, extensions },
     api.{ Argument, Context, DefaultCommand, Syntax },
-    extensions.gogolite.installer.WindowsInstaller
+    extensions.gogoserial.installer.WindowsInstaller
 
 class Install extends DefaultCommand {
   override def getSyntax = Syntax.commandSyntax

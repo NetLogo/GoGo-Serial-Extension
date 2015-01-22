@@ -1,9 +1,9 @@
-package org.nlogo.extensions.gogolite.prim
+package org.nlogo.extensions.gogoserial.prim
 
 import
   org.nlogo.{ api, extensions },
     api.{ Argument, Context, Syntax },
-    extensions.gogolite.controller.{ Controller, ControllerManager }
+    extensions.gogoserial.controller.{ Controller, ControllerManager }
 
 class Sensor(manager: ControllerManager) extends ManagedReporter(manager) {
   override def getSyntax = Syntax.reporterSyntax(Array(Syntax.NumberType), Syntax.NumberType)

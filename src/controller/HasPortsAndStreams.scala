@@ -1,4 +1,4 @@
-package org.nlogo.extensions.gogolite.controller
+package org.nlogo.extensions.gogoserial.controller
 
 import jssc.SerialPort
 

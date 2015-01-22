@@ -3,5 +3,5 @@
 *.jar
 *.jar.pack.gz
 target/
-/gogo-lite.zip
+/gogo-serial.zip
 .DS_Store

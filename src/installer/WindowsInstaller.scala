@@ -1,4 +1,4 @@
-package org.nlogo.extensions.gogolite.installer
+package org.nlogo.extensions.gogoserial.installer
 
 import
   java.{ io, util => jutil },

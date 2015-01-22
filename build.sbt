@@ -18,8 +18,8 @@ libraryDependencies ++= Seq(
     "http://ccl.northwestern.edu/devel/jssc-2.6.0.jar"
 )
 
-name := "gogo-lite"
+name := "gogo-serial"
 
 NetLogoExtension.settings
 
-NetLogoExtension.classManager := "org.nlogo.extensions.gogolite.GoGoLiteExtension"
+NetLogoExtension.classManager := "org.nlogo.extensions.gogoserial.GoGoSerialExtension"

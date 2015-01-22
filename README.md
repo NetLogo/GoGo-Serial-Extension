@@ -1,6 +1,6 @@
-# NetLogo GoGo Board Extension (Lite)
+# NetLogo GoGo Board Extension (Serial)
 
-This package contains the lite edition of the NetLogo GoGo board extension.
+This package contains the serial edition of the NetLogo GoGo board extension.
 
 ## Using
 
@@ -10,7 +10,7 @@ This extension is very similar to the GoGo extension that is pre-installed in Ne
 
 Run `./sbt package` to build the extension.
 
-If the build succeeds, `gogo-lite.jar` is created.
+If the build succeeds, `gogo-serial.jar` is created.
 
 ## How the Windows Installers Were Made
 
@@ -43,6 +43,6 @@ Congratulations.  You now have a working, seemlessly-launchable-from-NetLogo dri
 
 [![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)
 
-The lite edition of the NetLogo GoGo board extension is in the public domain.  To the extent possible under law, Uri Wilensky has waived all copyright and related or neighboring rights.
+The serial edition of the NetLogo GoGo board extension is in the public domain.  To the extent possible under law, Uri Wilensky has waived all copyright and related or neighboring rights.
 
 For managing connections with GoGo devices, this extension uses the JSSC library, Copyright 2010-2013 by Alexey Sokolov (scream3r.org@gmail.com).  See individual source files for more information (http://code.google.com/p/java-simple-serial-connector/). The library is covered by the GNU LGPL (Lesser General Public License). The text of that license is included in the "docs" folder which accompanies NetLogo, and is also available from http://www.gnu.org/copyleft/lesser.html .

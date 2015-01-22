@@ -1,5 +1,5 @@
 /** (c) 2004 Uri Wilensky. See README.txt for terms of use. **/
-package org.nlogo.extensions.gogolite
+package org.nlogo.extensions.gogoserial
 
 import java.util.{ List => JList }
 
@@ -9,7 +9,7 @@ import installer.WindowsInstaller
 
 import org.nlogo.api.{ DefaultClassManager, ExtensionException, ExtensionManager, PrimitiveManager }
 
-class GoGoLiteExtension extends DefaultClassManager {
+class GoGoSerialExtension extends DefaultClassManager {
 
   private val manager = new ControllerManager
 

@@ -1,11 +1,11 @@
-package org.nlogo.extensions.gogolite.controller
+package org.nlogo.extensions.gogoserial.controller
 
 import jssc.SerialPort
 
 import
   org.nlogo.{ api, extensions },
     api.ExtensionException,
-    extensions.gogolite.util.rethrowingJSSCSafely
+    extensions.gogoserial.util.rethrowingJSSCSafely
 
 import Constants.{ OutHeader1, OutHeader2 }
 

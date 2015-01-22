@@ -1,9 +1,9 @@
-package org.nlogo.extensions.gogolite.prim
+package org.nlogo.extensions.gogoserial.prim
 
 import
   org.nlogo.{ api, extensions },
     api.{ Argument, Context, Syntax },
-    extensions.gogolite.controller.{ Controller, ControllerManager }
+    extensions.gogoserial.controller.{ Controller, ControllerManager }
 
 class OutputPortPower(manager: ControllerManager) extends ManagedCommand(manager) {
   override def getSyntax = Syntax.commandSyntax(Array(Syntax.NumberType))

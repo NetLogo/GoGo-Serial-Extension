@@ -1,9 +1,9 @@
-package org.nlogo.extensions.gogolite.prim
+package org.nlogo.extensions.gogoserial.prim
 
 import
   org.nlogo.{ api, extensions },
     api.{ Argument, Context, DefaultReporter, LogoList, Syntax },
-    extensions.gogolite.util.{ fetchPorts, rethrowingSafely }
+    extensions.gogoserial.util.{ fetchPorts, rethrowingSafely }
 
 class ListPorts extends DefaultReporter {
   override def getSyntax = Syntax.reporterSyntax(Syntax.ListType)

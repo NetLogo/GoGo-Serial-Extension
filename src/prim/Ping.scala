@@ -1,9 +1,9 @@
-package org.nlogo.extensions.gogolite.prim
+package org.nlogo.extensions.gogoserial.prim
 
 import
   org.nlogo.{ api, extensions, nvm },
     api.{ Argument, Context, ExtensionException, Syntax },
-    extensions.gogolite.controller.{ Controller, ControllerManager },
+    extensions.gogoserial.controller.{ Controller, ControllerManager },
     nvm.{ ExtensionContext, Workspace }
 
 class Ping(manager: ControllerManager) extends ManagedReporter(manager) {
