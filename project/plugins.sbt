@@ -1,1 +1,2 @@
-addSbtPlugin("org.nlogo" % "netlogo-extension-plugin" % "1.1_5.0.x" from "http://ccl.northwestern.edu/devel/netlogo-extension-plugin-1.1_5.0.x.jar")
+addSbtPlugin("org.nlogo" % "netlogo-extension-plugin" % "1.2_5.3.x") // locally only at the moment
+// from "http://ccl.northwestern.edu/devel/netlogo-extension-plugin-1.2_5.3.x.jar")

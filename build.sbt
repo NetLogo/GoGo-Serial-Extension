@@ -1,4 +1,4 @@
-scalaVersion := "2.9.2"
+scalaVersion := "2.11.6"
 
 scalaSource in Compile <<= baseDirectory(_ / "src")
 
@@ -8,12 +8,12 @@ scalacOptions ++= Seq("-deprecation", "-unchecked", "-Xlint", "-Xfatal-warnings"
                       "-encoding", "us-ascii")
 
 javacOptions ++= Seq("-g", "-deprecation", "-Xlint:all", "-Xlint:-serial", "-Xlint:-path",
-                     "-encoding", "us-ascii",
-                     "-source", "1.5", "-target", "1.5")
+                     "-encoding", "us-ascii")
 
 libraryDependencies ++= Seq(
-  "org.nlogo" % "NetLogo" % "5.0.4" from
-    "http://ccl.northwestern.edu/netlogo/5.0.4/NetLogo.jar",
+  "org.nlogo" % "NetLogo" % "5.3.0" from
+    (baseDirectory.value.getParentFile.getParentFile / "target" / "NetLogo.jar").toURI.toString,
+    // "http://ccl.northwestern.edu/netlogo/5.3.0/NetLogo.jar",
   "jssc" % "jssc" % "2.6.0" from
     "http://ccl.northwestern.edu/devel/jssc-2.6.0.jar"
 )
